@@ -1,7 +1,9 @@
 package com.example.demo.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -10,32 +12,24 @@ import com.example.demo.model.Account;
 @Service 
 public class BankingService {
     
-    private final List<Account> accounts = new ArrayList<>();
-    
+    private final Map<Long, Account> accounts = new HashMap<>();
+
     private Long nextUserId = 1L; 
 
     public Account CreateAccount(String username){
         Account acc = new Account(nextUserId++,username,0L);
-        accounts.add(acc);
+        accounts.put(acc.getId(), acc);
         return acc; 
     }
 
     // Login 
     public Account getAccount(Long userid) {
-
-        for (Account account : accounts) {
-
-            if (account.getId().equals(userid)) {
-                return account;
-            }
-        }
-
-        return null;
+       return accounts.get(userid);
     }
 
     // To print userid and username of all accounts at landing page 
     public List<Account> getAllAccounts(){
-        return accounts;
+        return new ArrayList<>(accounts.values());
     }
 
     public Boolean Deposit(Long userid, Long amount){
@@ -43,21 +37,30 @@ public class BankingService {
         if (amount <= 0) {
             return false;
         }
+        Account account = accounts.get(userid);
         
-        for (Account account : accounts) {
-            if (account.getId().equals(userid)) {
+        // if account doesnt exist return false
+        if (account == null) {
+            return false;
+        }
 
-                Long original_balance = account.getBalance();
-                account.setBalance(
-                    original_balance + amount
-                );
+        // if account exists, update balance
+        Long original_balance = account.getBalance();
 
-                account.addTransaction(account.getUsername(), null, amount, original_balance, account.getBalance(),"DEPOSIT");
+        account.setBalance(
+            original_balance + amount
+        );
 
-                return true;
-            }
-        } 
-        return false;
+        account.addTransaction(
+            account.getUsername(),
+            null,
+            amount,
+            original_balance,
+            account.getBalance(),
+            "DEPOSIT"
+        );
+
+        return true;
     }
 
     public Boolean Withdraw(Long userid, Long amount){
@@ -66,23 +69,33 @@ public class BankingService {
             return false;
         }
 
-        for (Account account : accounts) {
-            if (account.getId().equals(userid)) {
+        Account account = accounts.get(userid);
 
-                Long original_balance = account.getBalance();
-                if(original_balance >= amount){
-
-                    account.setBalance(
-                        original_balance - amount
-                    );
-                    account.addTransaction(account.getUsername(), null, amount, original_balance, account.getBalance(),"WITHDRAW");
-                    return true;
-                }
-                return false; 
-                
-            }
+        // if account does not exist, return false 
+        if (account == null) {
+            return false;
         }
-        return false; 
+
+        // else update balance
+        Long original_balance = account.getBalance();
+
+        if (original_balance < amount) {
+            return false;
+        }
+
+        account.setBalance(
+            original_balance - amount
+        );
+
+        account.addTransaction(
+            account.getUsername(),
+            null,
+            amount,
+            original_balance,
+            account.getBalance(),
+            "WITHDRAW"
+        );
+        return true; 
     }
 
     public String transfer(Long fromId, Long toId, Long amount) {
@@ -95,19 +108,8 @@ public class BankingService {
             return "Cannot transfer to yourself";
         }
 
-        Account from_acc = null;
-        Account to_acc = null;
-
-        for (Account account : accounts) {
-
-            if (account.getId().equals(fromId)) {
-                from_acc = account;
-            }
-
-            if (account.getId().equals(toId)) {
-                to_acc = account;
-            }
-        }
+        Account from_acc = accounts.get(fromId);
+        Account to_acc = accounts.get(toId);
 
         if (from_acc == null || to_acc == null) {
             return "Provide proper id";
@@ -143,5 +145,5 @@ public class BankingService {
 
         return "Funds transferred";
     }
-
+    
 }
