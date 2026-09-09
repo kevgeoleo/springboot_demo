@@ -35,5 +35,7 @@ Instead of storing 50 outgoing transfers, I stored all types of transactions (WI
 2. No need for FROM and TO in Withdrawal and Deposit
 3. Print transaction history in reverse order (NEWEST first)
 4. Can be improved for concurrency - for withdraw, deposit and transfer - if 2 transactions take place at same time, can lead to deadlock
-5. Account id lookup is expensive (O(n)) - can be made faster using hash map
+
+## Improvements made
+6. Account id lookup is expensive (O(n)) due to the use of for loop to iterate List - can be made faster using Hash map
 
