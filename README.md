@@ -1,4 +1,5 @@
 # React / Springboot demo project
+Author: Kevin George Leo
 
 # Requirements
 
