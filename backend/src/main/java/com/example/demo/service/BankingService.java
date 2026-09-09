@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Service;
 
@@ -12,7 +13,7 @@ import com.example.demo.model.Account;
 @Service 
 public class BankingService {
     
-    private final Map<Long, Account> accounts = new HashMap<>();
+    private final Map<Long, Account> accounts = new ConcurrentHashMap<>();
 
     private Long nextUserId = 1L; 
 
