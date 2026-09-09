@@ -111,7 +111,7 @@ function LandingPage({ setCurrentAccount }: LandingPageProps) {
                 Login
             </button>
 
-
+            <br /><br />
             <h2>Existing Accounts</h2>
 
             {accounts.map((account) => (
@@ -121,6 +121,7 @@ function LandingPage({ setCurrentAccount }: LandingPageProps) {
                         <br />
                         Username: {account.username}
                     </p>
+                    <br />
                 </div>
             ))}
 
