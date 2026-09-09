@@ -19,3 +19,9 @@ cd backend
 
 3. Step 3:
    Visit `localhost:5173`
+
+## TODO
+
+1. Dialog boxes containing input boxes instead of directly showing input boxes - Create account, Withdraw, Deposit, Transfer, Login
+2. No need for FROM and TO in Withdrawal and Deposit
+3. Print transaction history in reverse order (NEWEST first)
