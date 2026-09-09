@@ -1,0 +1,40 @@
+# =========================
+# Spring Boot / Java
+# =========================
+
+backend/target/
+*.class
+*.log
+
+# =========================
+# React / Vite
+# =========================
+
+frontend/node_modules/
+frontend/dist/
+
+# =========================
+# Environment / Secrets
+# =========================
+
+.env
+.env.*
+!.env.example
+
+# =========================
+# IDE
+# =========================
+
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# =========================
+# OS
+# =========================
+
+.DS_Store
+Thumbs.db
