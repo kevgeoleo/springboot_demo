@@ -1,5 +1,11 @@
 # React / Springboot demo project
 
+# Requirements
+
+- Java 21
+- Node.js
+- npm
+
 ## Steps to run
 
 1. Step 1:
