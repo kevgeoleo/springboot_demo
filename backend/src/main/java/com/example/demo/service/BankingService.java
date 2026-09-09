@@ -122,33 +122,52 @@ public class BankingService {
             return "Provide proper id";
         }
 
-        if (from_acc.getBalance() < amount) {
-            return "Insufficient funds";
+        Account first = null;
+        Account second = null;
+
+        // Select lower id 
+        if(fromId > toId){
+            first = from_acc;
+            second = to_acc;
+        }else{
+            first = to_acc;
+            second = from_acc;
         }
 
-        Long original_balance_from = from_acc.getBalance();
-        Long original_balance_to = to_acc.getBalance();
+        // prevent race condition
+        synchronized (first){
+            synchronized (second) {
 
-        from_acc.setBalance(original_balance_from - amount);
-        to_acc.setBalance(original_balance_to + amount);
+                if (from_acc.getBalance() < amount) {
+                    return "Insufficient funds";
+                }
 
-        from_acc.addTransaction(
-            from_acc.getUsername(),
-            to_acc.getUsername(),
-            amount,
-            original_balance_from,
-            original_balance_from - amount,
-            "TRANSFER"
-        );
+                Long original_balance_from = from_acc.getBalance();
+                Long original_balance_to = to_acc.getBalance();
 
-        to_acc.addTransaction(
-            from_acc.getUsername(),
-            to_acc.getUsername(),
-            amount,
-            original_balance_to,
-            original_balance_to + amount,
-            "TRANSFER"
-        );
+                from_acc.setBalance(original_balance_from - amount);
+                to_acc.setBalance(original_balance_to + amount);
+
+                from_acc.addTransaction(
+                from_acc.getUsername(),
+                to_acc.getUsername(),
+                amount,
+                original_balance_from,
+                original_balance_from - amount,
+                "TRANSFER"
+            );
+
+            to_acc.addTransaction(
+                from_acc.getUsername(),
+                to_acc.getUsername(),
+                amount,
+                original_balance_to,
+                original_balance_to + amount,
+                "TRANSFER"
+            );
+            }
+        }
+        
 
         return "Funds transferred";
     }
