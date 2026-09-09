@@ -37,5 +37,5 @@ Instead of storing 50 outgoing transfers, I stored all types of transactions (WI
 4. Can be improved for concurrency - for withdraw, deposit and transfer - if 2 transactions take place at same time, can lead to race condition
 
 ## Improvements made
-6. Account id lookup is expensive (O(n)) due to the use of for loop to iterate List - can be made faster using Hash map
+1. Account id lookup is expensive (O(n)) due to the use of for loop to iterate List - can be made faster using Concurrent Hash Map
 
