@@ -44,21 +44,24 @@ public class BankingService {
             return false;
         }
 
-        // if account exists, update balance
-        Long original_balance = account.getBalance();
+        // prevent race conditon on account
+        synchronized (account) {
+            // if account exists, update balance
+            Long original_balance = account.getBalance();
 
-        account.setBalance(
-            original_balance + amount
-        );
+            account.setBalance(
+                original_balance + amount
+            );
 
-        account.addTransaction(
-            account.getUsername(),
-            null,
-            amount,
-            original_balance,
-            account.getBalance(),
-            "DEPOSIT"
-        );
+            account.addTransaction(
+                account.getUsername(),
+                null,
+                amount,
+                original_balance,
+                account.getBalance(),
+                "DEPOSIT"
+            );
+        }
 
         return true;
     }
@@ -76,25 +79,29 @@ public class BankingService {
             return false;
         }
 
-        // else update balance
-        Long original_balance = account.getBalance();
+        // prevent race conditon on account
+        synchronized (account) {
 
-        if (original_balance < amount) {
-            return false;
+            // else update balance
+            Long original_balance = account.getBalance();
+
+            if (original_balance < amount) {
+                return false;
+            }
+
+            account.setBalance(
+                original_balance - amount
+            );
+
+            account.addTransaction(
+                account.getUsername(),
+                null,
+                amount,
+                original_balance,
+                account.getBalance(),
+                "WITHDRAW"
+            );
         }
-
-        account.setBalance(
-            original_balance - amount
-        );
-
-        account.addTransaction(
-            account.getUsername(),
-            null,
-            amount,
-            original_balance,
-            account.getBalance(),
-            "WITHDRAW"
-        );
         return true; 
     }
 
