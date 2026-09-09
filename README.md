@@ -29,6 +29,17 @@ cd backend
 ## NOTE
 Instead of storing 50 outgoing transfers, I stored all types of transactions (WITHDRAW, DEPOSIT, TRANSFER) - please excuse that
 
+## FRONTEND
+1. Landing Page
+   - Create user
+   - Login
+3. User Page
+   - Show balance
+   - Withdraw
+   - Deposit
+   - Transfer
+   - Show transfer history
+
 ## TODO
 
 1. Dialog boxes containing input boxes instead of directly showing input boxes - Create account, Withdraw, Deposit, Transfer, Login
