@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Service;
 
@@ -14,17 +15,29 @@ public class BankingService {
     
     private final Map<Long, Account> accounts = new ConcurrentHashMap<>();
 
-    private Long nextUserId = 1L; 
+    //private Long nextUserId = 1L; 
+    private final AtomicLong nextUserId = new AtomicLong(1); 
 
     public Account CreateAccount(String username){
-        Account acc = new Account(nextUserId++,username,0L);
+        Account acc = new Account(nextUserId.getAndIncrement(),username,0L);
         accounts.put(acc.getId(), acc);
         return acc; 
     }
 
     // Login 
-    public Account getAccount(Long userid) {
-       return accounts.get(userid);
+    public Account getAccount(Long userId) {
+       return accounts.get(userId);
+    }
+
+    // Delete account
+    public Boolean deleteAccount(Long userId){
+        
+        if (accounts.get(userId) != null){
+            accounts.remove(userId);
+            return true;
+        }
+        return false;
+        //return accounts.remove(userid) != null;
     }
 
     // To print userid and username of all accounts at landing page 
@@ -53,14 +66,14 @@ public class BankingService {
                 original_balance + amount
             );
 
-            account.addTransaction(
+            /*account.addTransaction(
                 account.getUsername(),
                 null,
                 amount,
                 original_balance,
                 account.getBalance(),
                 "DEPOSIT"
-            );
+            );*/
         }
 
         return true;
@@ -93,14 +106,14 @@ public class BankingService {
                 original_balance - amount
             );
 
-            account.addTransaction(
+            /*account.addTransaction(
                 account.getUsername(),
                 null,
                 amount,
                 original_balance,
                 account.getBalance(),
                 "WITHDRAW"
-            );
+            );*/
         }
         return true; 
     }
@@ -122,10 +135,10 @@ public class BankingService {
             return "Provide proper id";
         }
 
-        Account first = null;
-        Account second = null;
+        Account first;
+        Account second;
 
-        // Select lower id 
+        // Select higher id 
         if(fromId > toId){
             first = from_acc;
             second = to_acc;
@@ -154,17 +167,17 @@ public class BankingService {
                 amount,
                 original_balance_from,
                 original_balance_from - amount,
-                "TRANSFER"
+                "OUTGOING TRANSFER"
             );
 
-            to_acc.addTransaction(
+            /*to_acc.addTransaction(
                 from_acc.getUsername(),
                 to_acc.getUsername(),
                 amount,
                 original_balance_to,
                 original_balance_to + amount,
-                "TRANSFER"
-            );
+                "INCOMING TRANSFER"
+            );*/
             }
         }
         
