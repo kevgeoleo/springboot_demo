@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,6 +40,12 @@ public class BankController {
         return bankingService.CreateAccount(account.getUsername());
     }
 
+    // delete an account
+    @DeleteMapping ("/{userId}/remove")
+    public Boolean deleteAccount(@PathVariable Long userId){
+        return bankingService.deleteAccount(userId);
+    }
+
     // login 
     @GetMapping("/login/{id}")
     public ResponseEntity<Account> login(@PathVariable Long id) {
@@ -47,7 +54,6 @@ public class BankController {
         Account account = bankingService.getAccount(id);
 
         if (account == null) {
-
             // 404 not found
             return ResponseEntity.notFound().build();
         }

@@ -19,6 +19,7 @@ function UserPage({account, setCurrentAccount}: UserPageProps) {
 
     // Sign out
     function signOut() {
+        localStorage.removeItem("userId");
         setCurrentAccount(null);
     }
 
@@ -57,6 +58,25 @@ function UserPage({account, setCurrentAccount}: UserPageProps) {
         } else {
             alert("Invalid amount");
         }
+    }
+
+    async function deleteAccount(){
+        const response = await fetch(
+            `http://localhost:3005/api/${account.id}/remove`,
+            {
+                method: "DELETE"
+            }
+        );
+
+        const isDeleted = await response.json();
+
+        if (!isDeleted) {
+            alert("incorrect account details");
+            return;
+        }
+
+        // Logout
+        setCurrentAccount(null);
     }
 
     async function Withdraw(){
@@ -167,8 +187,12 @@ function UserPage({account, setCurrentAccount}: UserPageProps) {
     return (
         <div>
 
-            <button onClick={signOut}>
+            <button onClick={signOut} style={{ marginRight: "12px" }}>
                 Sign Out
+            </button>
+
+            <button onClick={deleteAccount}>
+                Terminate Account
             </button>
 
             <h1>Welcome {account.username}</h1>
@@ -211,13 +235,17 @@ function UserPage({account, setCurrentAccount}: UserPageProps) {
 
             <h2>Transaction History</h2>
 
-            {/* TODO: for WITHDRAWAL and DEPOSIT - No need for From and To */}
             {account.transactionHistory.map((transaction) => (
                 <div key={transaction.timestamp}>
                     <p>
-                        From: {transaction.from}
-                        <br />
-                        To: {transaction.to}
+                        {/* For WITHDRAWAL and DEPOSIT - No need for From and To */}
+                        {!(transaction.transactionType === "WITHDRAW" || transaction.transactionType === "DEPOSIT") && (
+                            <>
+                                From: {transaction.from}
+                                <br />
+                                To: {transaction.to}
+                            </>
+                        )}
                         <br />
                         Amount: {transaction.amount}
                         <br />
